@@ -530,6 +530,8 @@ window.nouns = ["accelerator", "accordion", "account", "accountant", "acknowledg
                 <div id="search-tools">
 
                     <h2> Today's Events (?)</h2>
+
+                    {{ events }}
                     <input type="search" class="search event-search" v-model="search" placeholder="Event name, city, Venue..." />
                     <div id="search-results">
                         <transition-group name="search" tag="div" class="search-results__transition">

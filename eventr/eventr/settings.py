@@ -127,8 +127,30 @@ STATIC_URL = '/static/'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 
+# Additions
+
+CACHES = {
+'default': {
+    'BACKEND': 'django.core.cache.backends.db.DatabaseCache',
+    'LOCATION': 'api_cache', #Name is a bit naff
+}
+
+PARTNER_CACHE_TIME = 60
+
 # Possibly define city here if it's a bit weird
-PARTNER_EVENT_APIS = ['https://system.spektrix.com/toppingbooks/api/', 
-                      'https://system.spektrix.com/mercurytheatre/', 
-                      'https://system.spektrix.com/'
-                      ]
+PARTNER_EVENT_APIS = [{ 'name': 'Topping Books',
+                        'url': 'https://system.spektrix.com/toppingbooks/api/v3/events', 
+                        'defaultCity': 'Bath'},
+                      { 'name': 'Mercury Theatre', 
+                        'url': 'https://system.spektrix.com/mercurytheatre/api/v3/events', 
+                        'defaultCity': 'Bath'
+                      }, 
+                      { 'name':'Bridge Theatre London',
+                        'url': 'https://system.spektrix.com/bridgetheatrelondon/api/v3/events', 
+                        'defaultCity': 'London'
+                      }] 
+
+PARTNER_LOCAL_STORAGE = "partner-event-cache-{}.json"           
+
+PARTNER_EVENT_APIS_DEVELOPMENT = """I would put together some dummy responses based on the results from these and have them run
+                            as integration tests or from a local source rather than hitting them directly during testing"""

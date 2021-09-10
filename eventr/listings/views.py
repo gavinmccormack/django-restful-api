@@ -1,6 +1,5 @@
 from django.shortcuts import render
 
-# Create your views here.
-
 def listings(request):
-	return render(request, 'index.html') 
+	context = {"events": ['a','b']}
+	return render(request, 'index.html', context) 
