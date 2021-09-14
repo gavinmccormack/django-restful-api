@@ -533,12 +533,14 @@ window.nouns = ["accelerator", "accordion", "account", "accountant", "acknowledg
 
                     {{ events }}
                     <input type="search" class="search event-search" v-model="search" placeholder="Event name, city, Venue..." />
-                    <div id="search-results">
+                    <div id="search-results" >
                         <transition-group name="search" tag="div" class="search-results__transition">
                             <div class="search-item" v-for="result in filteredList" :key="result.name">
                                 <img src="/" class="search-item__image event-image" />
                                 <div class="search-item__details">
-                                    <h2 class="search-item__title">[[ result.name ]]</h2>   
+                                    <h2 class="search-item__title">[[ result.name ]] 
+                                        [[ result.title ]]
+                                    </h2>   
                                     <span class="search-item__city">[[ result.city ]]</span>
                                     <span class="search-item__date">[[ result.date ]]</span>
                                 </div>
@@ -550,6 +552,7 @@ window.nouns = ["accelerator", "accordion", "account", "accountant", "acknowledg
     </section>
 
     <!-- Wouldn't use vue from a random CDN, would also probably check out vue integrations with django that avoid delimiter template issues more easily - but I just want to get a quick template out.  -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.21.4/axios.min.js" integrity="sha512-lTLt+W7MrmDfKam+r3D2LURu0F47a3QaW5nF0c6Hl0JDZ57ruei+ovbg7BrZ+0bjVJ5YgzsAWE+RreERbpPE1g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
     <script>
 
@@ -571,6 +574,16 @@ window.nouns = ["accelerator", "accordion", "account", "accountant", "acknowledg
                   })
                 }
           },
+          methods: {
+            fetchAPI() { 
+                fetch("/get_events").then(
+                    response=>response.json())
+                    .then(data=> this.results=data);
+            }
+          },
+          created() {
+              this.fetchAPI();
+          }
         })
 
         function create_event_name() {
@@ -582,6 +595,8 @@ window.nouns = ["accelerator", "accordion", "account", "accountant", "acknowledg
         Array.apply(null, Array(50)).map(function (_, i) {
             results.results.push({ name: create_event_name(), city: 'London', date: '02/04/2021'});
         });
+
+        
 
     </script>
 
