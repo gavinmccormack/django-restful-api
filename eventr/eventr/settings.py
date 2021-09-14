@@ -130,27 +130,15 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 # Additions
 
 CACHES = {
-'default': {
-    'BACKEND': 'django.core.cache.backends.db.DatabaseCache',
-    'LOCATION': 'api_cache', #Name is a bit naff
+    'default': {
+        'BACKEND': 'django.core.cache.backends.filebased.FileBasedCache',
+        'LOCATION': BASE_DIR / 'api_cache', 
+    }
 }
+PARTNER_CACHE_TIME = 60 # Reasonable way to stop double runs.
+PARTNER_CACHE_KEY_FORMAT = "partner-api-{}"
 
-PARTNER_CACHE_TIME = 60
+# To be honest, I'd rather have APIs defined here rather than in a database, but always going to be some splitting.
 
-# Possibly define city here if it's a bit weird
-PARTNER_EVENT_APIS = [{ 'name': 'Topping Books',
-                        'url': 'https://system.spektrix.com/toppingbooks/api/v3/events', 
-                        'defaultCity': 'Bath'},
-                      { 'name': 'Mercury Theatre', 
-                        'url': 'https://system.spektrix.com/mercurytheatre/api/v3/events', 
-                        'defaultCity': 'Bath'
-                      }, 
-                      { 'name':'Bridge Theatre London',
-                        'url': 'https://system.spektrix.com/bridgetheatrelondon/api/v3/events', 
-                        'defaultCity': 'London'
-                      }] 
-
-PARTNER_LOCAL_STORAGE = "partner-event-cache-{}.json"           
-
-PARTNER_EVENT_APIS_DEVELOPMENT = """I would put together some dummy responses based on the results from these and have them run
-                            as integration tests or from a local source rather than hitting them directly during testing"""
+USE_TZ = False # Supressing some timezone errors as the time grabbed from event system is not timezone aware, blah blah blah. It's all in the UK currently,
+               # So that makes it easier.
