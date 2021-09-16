@@ -1,5 +1,41 @@
 # eventr 
 
+
+# Okay. 
+
+16/09/21
+
+I've just fired this link over to you by email. I thought I'd write a "Where I got to..."
+
+So events are just sent to the front end by an all() queryset in a bog standard django JSON/GET view.
+
+I didn't hook this up to the REST framework, and I had
+a wee bit of trouble working out exactly what defines an instance when populating the database - and therefor how to handle the times aspect.
+
+I haven't used the RESTframework in recent memory, but it seems like it has some standardised components for taking in URL parameters and transfering them into a date range - so I don't think I'd be writing that myself.
+
+
+Front end? Quite rough. Definitely shows too many items. I suppose all it would need is the filter parameters for dates. Search attributes broadened.
+
+I think I've written this somewhere in comments, but I would be inclined not to pass _all_ of this logic over to the back end. I think given the nature of the data, the client can hold quite a lot of it easily, do front end searching via JS/the client side platform. This would make it very fast and reduce complexity, leverage caching, so on and so forth.
+
+
+
+model-api relationship - I had been expecting some kind of unique ID that ties events together - for example 20/20 vision at
+toppings book shops. I was hoping they'd have a shared ID between 'instances', but that doesn't seem to be the case. Without
+knowledge of the data, or checking them I wouldn't know which field is a good unique key.
+
+
+
+
+
+
+
+
+
+
+
+
 Welcome to eventr, the (fictional) Future of Listings for the Web 3.0 era. Development has just started but 
 eventr aims to provide a unified listings API for events at partner venues. All partner venues will use the
 Spektrix ticketing system to start with.

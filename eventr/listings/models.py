@@ -26,3 +26,15 @@ class EventInstance(models.Model):
     start_datetime = models.DateTimeField()
     venue_name = models.TextField(blank=True)
     venue_address = models.TextField(blank=True)
+
+from listings.serializers import EventSerializer
+class EventList(ListAPIView):
+    queryset = Event.objects.all().filter()
+    serializer_class = eventSerializer
+    filter_backends = [DjangoFilterBackend] # NB: Is needed?
+    filterset_fields = { 
+        'start_datetime': ['date__range', 'gte', 'lte', 'exact', 'gt', 'lt']
+    } 
+    # NB: Worth googling these values to find where they are defined
+    # in REST docs/code
+    # Alternatively django-filter, but I think that's for the ORM

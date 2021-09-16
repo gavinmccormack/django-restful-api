@@ -4,7 +4,7 @@ from listings.models import Event
 from django.http import HttpResponse, JsonResponse
 
 def listings(request):
-	context = {"events": ['a','b']}
+	context = {}
 	return render(request, 'index.html', context) 
 
 def events_view(request):
