@@ -374,7 +374,7 @@
 
             .valign {
                 display: -webkit-flex;
-                -webkit-flex-wrap: wrap!important
+                -webkit-flex-wrap: wrap !important;
             }
 
             .valign:after,
@@ -540,7 +540,9 @@
                             </div>
                         </transition-group>
 
-                        <!-- pagination -->
+                        <!-- pagination 
+
+                            Was adding this 
                         <ul class="pagination">
                             <li class="page-item">
                               <button type="button" class="page-link" v-if="page != 1" @click="page--"> Previous </button>
@@ -552,6 +554,8 @@
                               <button type="button" @click="page++" v-if="page < pages.length" class="page-link"> Next </button>
                             </li>
                           </ul>
+
+                          -->
                     </div>
 
                 </div>
@@ -571,16 +575,18 @@
               { name: 'Dancepants', city: 'Bath', date: '02/04/2021'},
               { name: 'Pants Dance', city: 'Edinburgh', date: '02/04/2021'}
             ],
+            /*  I was adding this... 
             page: 0, 
             perPage: 8,
             pages: []
+            */
           },
           computed: {
                 filteredList() {
                   return this.results.filter(result => {
                   // NB: Include other attributes/date/search/whatever
                     return result.name.toLowerCase().includes(this.search.toLowerCase())
-                  }).slice(page*perPage,(page+1)*perPage)
+                  })
                 }
           },
           methods: {
@@ -588,30 +594,16 @@
                 fetch("/get_events").then(
                     response=>response.json())
                     .then(data=> {
-                        d =  data.forEach(x => x.description = x.description.slice(0,60) + "..."
-                        )
-                        console.log("d", d)
                         this.results=data
+                        data.forEach(x => x.description = x.description.slice(0,60) + "..."
+                        );
                     });
-            },
-            SetPages () {
-                let numberOfPages = Math.ceil(this.posts.length / this.perPage);
-                for (let index = 1; index <= numberOfPages; index++) {
-                    this.pages.push(index);
-                }
-                },
-                paginate (posts) {
-                let page = this.page;
-                let perPage = this.perPage;
-                let from = (page * perPage) - perPage;
-                let to = (page * perPage);
-                return  posts.slice(from, to);
-                },
-            },
+            }
+        },
           created() {
               this.fetchAPI();
           }
-        })
+        });
 
     </script>
 

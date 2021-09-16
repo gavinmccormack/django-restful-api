@@ -27,6 +27,10 @@ class EventInstance(models.Model):
     venue_name = models.TextField(blank=True)
     venue_address = models.TextField(blank=True)
 
+
+"""
+I was in the middle of adding this, but since I'm just uploading what I've got right now, this breaks runtime
+
 from listings.serializers import EventSerializer
 class EventList(ListAPIView):
     queryset = Event.objects.all().filter()
@@ -38,3 +42,5 @@ class EventList(ListAPIView):
     # NB: Worth googling these values to find where they are defined
     # in REST docs/code
     # Alternatively django-filter, but I think that's for the ORM
+
+"""
