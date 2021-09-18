@@ -1,16 +1,30 @@
 from django.shortcuts import render
-from listings.serializers import EventSerializer
-from listings.models import Event
-from django.http import HttpResponse, JsonResponse
+from listings.serializers import EventInstanceSerializer
+from listings.models import EventInstance # NB: Can remove Event if inst based
+from django.http import JsonResponse
+from rest_framework.views import APIView
+from datetime import datetime, timedelta
 
 def listings(request):
 	context = {}
 	return render(request, 'index.html', context) 
 
-def events_view(request):
-	# Okay, so because it's neater to have something that works.
-	# And the data isn't too large, I'm going to skip
-	# using the filtering/queryset aspect of events
-	events = Event.objects.all()
-	serializer = EventSerializer(events, many=True)
-	return JsonResponse(serializer.data, safe=False)
+
+from django.utils.decorators import method_decorator
+from django.views.decorators.cache import cache_page
+
+class EventApi(APIView): 
+	# Unfamiliar with the APIView class. Could be doing all kinds of things.
+	@method_decorator(cache_page(60*60*2))
+	def get(self, request, format=None):
+		if request.GET.get('today'):
+			today = datetime.now()
+			tomorrow = datetime.now() + timedelta(days=100) # For a certain definition of today
+			events = EventInstance.objects.filter(start_datetime__range=[today,tomorrow]) # NB: I'd probably recheck this, because it seems like somewhere I might make an off by one type mistake
+			events = events.select_related('event', 'event__source')				
+			serializer = EventInstanceSerializer(events, many=True)
+			return JsonResponse(serializer.data, safe=False)
+		else:
+			events = EventInstance.objects.all().select_related('event','event__source')
+			serializer = EventInstanceSerializer(events, many=True)
+			return JsonResponse(serializer.data, safe=False)

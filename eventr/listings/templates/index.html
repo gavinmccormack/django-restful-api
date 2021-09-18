@@ -13,7 +13,8 @@
 	<link rel="preconnect" href="https://fonts.googleapis.com">
 	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 	<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;800&display=swap" rel="stylesheet"> 
-
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" integrity="sha512-1ycn6IcaQQ40/MKBW2W4Rhis/DbILU74C1vSrLJxCq57o941Ym01SwNsOMqvEBFlcgUa6xLiPY/NS5R+E6ztJQ==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="shortcut icon" type="image/png" href="https://www.favicon.cc/logo3d/631916.png"/> <!-- 🙈 -->
     <style>
 
             /* I have just yonked this CSS from an unused project */
@@ -202,11 +203,10 @@
                 bottom: 0;
                 background-color: #000;
                 color: #fff;
-                opacity: 0;
+                animation: fade 1s linear;
                 -webkit-transition: all .4s;
                 transition: all .4s;
                 z-index: 1050;
-                display: none
             }
 
             .navbar-menu-content {
@@ -480,137 +480,22 @@
                     font-size: 1.2em
                 }
             }
+
+            .fa-spinner {
+                font-size: 100px;
+                text-align: center;
+                width: 100%;
+                display: block;
+                margin-top: 30vh;            
+        }
     </style>
-    </head>
 
-<body>
-
-    <nav class="navbar" role="navigation">
-        <div class="container-fluid">
-            <div class="navbar-header">
-                <button type="button" class="toggle-navigation" data-toggle="navbar-menu">
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                </button>
-                <a class="navbar-brand" href="index.html">
-                    <span>Event</span>
-                    <span>R</span>
-                </a>
-            </div>
-        </div>
-    </nav>
-
-    <div class="navbar-menu" id="navbar-menu">
-        <div class="navbar-menu-content">
-            <ul class="navbar-menu-list">
-                <li><a href="about.html">Events</a></li>
-                <li><a href="artist.html">About</a></li>
-                <li><a href="contact.html">Contact</a></li>
-            </ul>
-            <ul class="navbar-menu-social">
-                <li><a href="#" target="_blank" title="Twitter"><i class="fab fa-twitter"></i></a></li>
-                <li><a href="#" target="_blank" title="Instagram"><i class="fab fa-instagram"></i></a></li>
-                <li><a href="#" target="_blank" title="Spotify"><i class="fab fa-spotify"></i></a></li>
-            </ul>
-        </div>
-    </div>
-
-    <section id="home" class="page-content">
-                <div id="search-tools">
-
-                    <h2> Today's Events (?)</h2>
-                    <p>Due to not being clear from the API which dates and 
-                        times describe an instance, this is all the events </p>
-                    <input type="search" class="search event-search" v-model="search" placeholder="Event name, city, Venue..." />
-                    <div id="search-results" >
-                        <transition-group name="search" tag="div" class="search-results__transition">
-                            <div class="search-item" v-for="result in filteredList" :key="result.name">
-                                <img src="/" class="search-item__image event-image" />
-                                <div class="search-item__details">
-                                    <h2 class="search-item__title">[[ result.name ]] 
-                                        [[ result.title ]]
-                                    </h2>   
-                                    <span class="search-item__city">[[ result.city ]] </span>
-                                    <span class="search-item__date">[[ result.date ]]
-                                        [[ result.description ]]
-
-                                    </span>
-                                </div>
-                            </div>
-                        </transition-group>
-
-                        <!-- pagination 
-
-                            Was adding this 
-                        <ul class="pagination">
-                            <li class="page-item">
-                              <button type="button" class="page-link" v-if="page != 1" @click="page--"> Previous </button>
-                            </li>
-                            <li class="page-item">
-                              <button type="button" class="page-link" v-for="pageNumber in pages.slice(page-1, page+5)" @click="page = pageNumber"> {{pageNumber}} </button>
-                            </li>
-                            <li class="page-item">
-                              <button type="button" @click="page++" v-if="page < pages.length" class="page-link"> Next </button>
-                            </li>
-                          </ul>
-
-                          -->
-                    </div>
-
-                </div>
-    </section>
-
-    <!-- Wouldn't use vue from a random CDN, would also probably check out vue integrations with django that avoid delimiter template issues more easily - but I just want to get a quick template out.  -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.21.4/axios.min.js" integrity="sha512-lTLt+W7MrmDfKam+r3D2LURu0F47a3QaW5nF0c6Hl0JDZ57ruei+ovbg7BrZ+0bjVJ5YgzsAWE+RreERbpPE1g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
-    <script>
-
-        var results = new Vue({
-          el: '#search-tools',
-    	  delimiters: ['[[', ']]'],
-          data: {
-            search: '',
-            results: [
-              { name: 'Dancepants', city: 'Bath', date: '02/04/2021'},
-              { name: 'Pants Dance', city: 'Edinburgh', date: '02/04/2021'}
-            ],
-            /*  I was adding this... 
-            page: 0, 
-            perPage: 8,
-            pages: []
-            */
-          },
-          computed: {
-                filteredList() {
-                  return this.results.filter(result => {
-                  // NB: Include other attributes/date/search/whatever
-                    return result.name.toLowerCase().includes(this.search.toLowerCase())
-                  })
-                }
-          },
-          methods: {
-            fetchAPI() { 
-                fetch("/get_events").then(
-                    response=>response.json())
-                    .then(data=> {
-                        this.results=data
-                        data.forEach(x => x.description = x.description.slice(0,60) + "..."
-                        );
-                    });
-            }
-        },
-          created() {
-              this.fetchAPI();
-          }
-        });
-
-    </script>
-
+        
     <style>
         body {
             font-family: "Montserrat", sans-serif;
         }
+
         a {
             text-decoration: none;
         }
@@ -644,6 +529,8 @@
             margin:0 3% 6% 0;
             min-height: 310px;
             border:3px solid black;
+            flex-grow: 1;
+            position: relative;
         }
 
         .search-item__image {
@@ -653,22 +540,209 @@
         }
 
         .search-item__details {
-            padding:0.3rem 5%;
+            padding:0.3rem 0.6rem 0.9rem ;
             text-align: center;
         }
         .search-item__title {
             font-size:1rem;
             display: block;
-            margin-bottom: 0.15rem;
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            background-color: rgba(255,255,255,0.5);
+            padding: 0.6rem 0.9rem;
         }
 
+        .search-item__source_name {
+            font-weight: bold;
+            display: block;
+        }
         .search-item__city {
             font-size:0.8rem;
+            font-style: italic;
+            display: block;
         }
         .search-item__date {
             font-size:0.7rem;
         }
+
+        .search-item__description {
+            display: block;
+            margin-top:0.6rem;
+        }
+
+        .search-item__image {
+            width: 100%;
+            height: 70%;
+        }
+
+        .search-list-enter {
+            opacity: 0;
+        }
+
+        /* Vue has transitions but.... */
+        .search-item {    
+            animation: fade 1s linear;
+        }
+        body {
+            animation: fadeBody 2s linear;
+        }
+        
+        @keyframes fade {
+        0% { opacity: 0 }
+        100% { opacity: 1 }
+        }
+
+        @keyframes fadeBody {
+        0% { opacity: 0 }
+        30% { opacity: 0 }
+        100% { opacity: 1 }
+        }
     </style>
+    </head>
+
+<body>
+    <!-- I grabbed this header and CSS from an unused project -->
+    <div id="navgroup">
+        <nav class="navbar" role="navigation">
+            <div class="container-fluid">
+                <div class="navbar-header">
+                    <button type="button" class="toggle-navigation"  v-on:click="showMenu = !showMenu">
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+                    <a class="navbar-brand" href="index.html">
+                        <span>Event</span>
+                        <span>R</span>
+                    </a>
+                </div>
+            </div>
+        </nav>
+
+        <div class="navbar-menu" id="navbar-menu" v-if="showMenu">
+            <div class="navbar-menu-content">
+                <ul class="navbar-menu-list">
+                    <li><a href="about.html">Events</a></li>
+                    <li><a href="artist.html">About</a></li>
+                    <li><a href="contact.html">Contact</a></li>
+                </ul>
+                <ul class="navbar-menu-social">
+                    <li><a href="#" target="_blank" title="Twitter"><i class="fab fa-twitter"></i></a></li>
+                    <li><a href="#" target="_blank" title="Instagram"><i class="fab fa-instagram"></i></a></li>
+                    <li><a href="#" target="_blank" title="Spotify"><i class="fab fa-spotify"></i></a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <!-- -->
+
+    <section id="home" class="page-content">
+                <div id="search-tools">
+
+                    <h2> Today's Events</h2>
+                    <input type="search" class="search event-search" v-model="search" placeholder="Event name, city, Venue..." />
+                    <div id="search-results" >
+                        <transition name="fade">
+                        <transition-group name="search" tag="div" class="search-results__transition" >
+                            <div class="search-item" v-for="result in filteredList" :key="result.id" v-if="fadeIn">
+                                <span class="oooooo">
+                                    <img src="https://i.pinimg.com/originals/e0/c7/69/e0c76977caf33ad7c171461b00c0686a.gif" class="search-item__image event-image" />
+                                </span>
+                                <div class="search-item__details">
+                                    <h2 class="search-item__title">[[ result.event.name ]] 
+                                    </h2>   
+                                    <span class="search-item__source_name">[[ result.event.source.friendly_name ]]</span>
+                                    <span class="search-item__city">[[ result.event.source.default_city ]] </span> 
+                                    <span class="search-item__date">[[ result.start_datetime ]] </span>
+                                    <span class="search-item__description">[[ result.event.description ]]</span>
+
+                                    </span>
+                                </div>
+                            </div>
+                        </transition-group>
+                    </transition>
+                        <!-- pagination 
+
+                            Was adding this 
+                        <ul class="pagination">
+                            <li class="page-item">
+                              <button type="button" class="page-link" v-if="page != 1" @click="page--"> Previous </button>
+                            </li>
+                            <li class="page-item">
+                              <button type="button" class="page-link" v-for="pageNumber in pages.slice(page-1, page+5)" @click="page = pageNumber"> {{pageNumber}} </button>
+                            </li>
+                            <li class="page-item">
+                              <button type="button" @click="page++" v-if="page < pages.length" class="page-link"> Next </button>
+                            </li>
+                          </ul>
+
+                          -->
+                    </div>
+
+                </div>
+    </section>
+
+    <!-- Wouldn't use vue from a random CDN, npm, yarn, packages, 
+        would also check out vue integrations with django 
+        that avoid delimiter template issues more easily - but I just want to get 
+        a quick template out.  -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.21.4/axios.min.js" integrity="sha512-lTLt+W7MrmDfKam+r3D2LURu0F47a3QaW5nF0c6Hl0JDZ57ruei+ovbg7BrZ+0bjVJ5YgzsAWE+RreERbpPE1g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <script>
+        var results = new Vue({
+          el: '#search-tools',
+    	  delimiters: ['[[', ']]'],
+          data: {
+            search: '',
+            results: [],
+            fadeIn: true,
+            /*  I was adding this... 
+            page: 0, 
+            perPage: 8,
+            pages: []
+            */
+          },
+          computed: {
+                filteredList: function() {
+                    return this.results.filter(result => {
+                        searchFields = ['name', 'source.default_city']; // NB: Not implemented but search across relevant attributes
+                        console.log("filty list") // This runs once for each item in the results. Seems silly.
+                        nameField = (result.event ?? "").name ?? "" // Modern problems require modern solutions. I think I just left test data in.
+                        return nameField.toLowerCase().includes(this.search.toLowerCase())
+                  })
+                },   
+          },
+          methods: {
+            fetchAPI: function() { 
+                fetch("/get_events?today=true").then(
+                    response=>response.json())
+                    .then(data=> {
+                        this.loading = false;
+                        data.forEach(x => { 
+                            x.event.description = x.event.description.slice(0,60) + "...";
+                            this.results=data;
+                    });
+                });
+            }
+        },
+          beforeMount() {
+              this.fetchAPI();
+          }
+        });
+
+
+        // More fades are needed. Clearly.
+        new Vue({
+            el: '#navgroup',
+            data: {
+                showMenu: false
+            }
+        })
+
+    </script>
+
 </body>
 
 </html>
