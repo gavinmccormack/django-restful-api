@@ -507,7 +507,7 @@
 
         .event-search {
             margin: 1rem 0 0 0;
-            width: 95%;
+            width: 97%;
             height: 60px;
             border:3px solid black;
             padding: 1.15rem;
@@ -567,6 +567,14 @@
             font-size:0.7rem;
         }
 
+        .search-item__time {
+            border: 1px solid black;
+            padding: 0.3rem;
+            display: block;
+            clear: both;
+            width: min-content;
+            margin: 0.3rem auto;
+        }
         .search-item__description {
             display: block;
             margin-top:0.6rem;
@@ -590,8 +598,8 @@
         }
         
         @keyframes fade {
-        0% { opacity: 0 }
-        100% { opacity: 1 }
+        0% { opacity: 0; height: 0; }
+        100% { opacity: 1; height:100%; }
         }
 
         @keyframes fadeBody {
@@ -642,11 +650,15 @@
                 <div id="search-tools">
 
                     <h2> Today's Events</h2>
+
+                    <p>Date range selection hasn't been added, but I would grab a <a style="color:#f3d879; font-weight:bold;" href="https://innologica.github.io/vue2-daterange-picker/#example-playground">vue library</a> to handle input,
+                        and the api is fairly straight forwards
+                    </p>
                     <input type="search" class="search event-search" v-model="search" placeholder="Event name, city, Venue..." />
                     <div id="search-results" >
                         <transition name="fade">
                         <transition-group name="search" tag="div" class="search-results__transition" >
-                            <div class="search-item" v-for="result in filteredList" :key="result.id" v-if="fadeIn">
+                            <div class="search-item" v-for="result in filteredList" :key="result.id" v-if="fadeIn" style="transition-delay: 1s">
                                 <span class="oooooo">
                                     <img src="https://i.pinimg.com/originals/e0/c7/69/e0c76977caf33ad7c171461b00c0686a.gif" class="search-item__image event-image" />
                                 </span>
@@ -656,6 +668,7 @@
                                     <span class="search-item__source_name">[[ result.event.source.friendly_name ]]</span>
                                     <span class="search-item__city">[[ result.event.source.default_city ]] </span> 
                                     <span class="search-item__date">[[ result.start_datetime ]] </span>
+                                    <span class="search-item__time">[[ result.start_clocktime ]]</span>
                                     <span class="search-item__description">[[ result.event.description ]]</span>
 
                                     </span>
@@ -697,7 +710,9 @@
           data: {
             search: '',
             results: [],
+            stagedResults: [],
             fadeIn: true,
+            lockSearch: false,
             /*  I was adding this... 
             page: 0, 
             perPage: 8,
@@ -706,12 +721,25 @@
           },
           computed: {
                 filteredList: function() {
-                    return this.results.filter(result => {
-                        searchFields = ['name', 'source.default_city']; // NB: Not implemented but search across relevant attributes
-                        console.log("filty list") // This runs once for each item in the results. Seems silly.
+                    results = this.results.filter(result => {
+                        console.log("This runs once for each data item on load") // This runs once for each item in the results. Seems silly.
+                        searchInput = this.search.toLowerCase();
+                        // Name 
                         nameField = (result.event ?? "").name ?? "" // Modern problems require modern solutions. I think I just left test data in.
-                        return nameField.toLowerCase().includes(this.search.toLowerCase())
-                  })
+                        var partialNameMatch =  nameField.toLowerCase().includes(searchInput);
+
+                        // City - full match 
+                        city = result.event.source.default_city.toLowerCase();
+                        cityMatch = city.includes(searchInput);
+
+                        // Partner - full match ( doesn't seem like it would be used )
+                        partner = result.event.source.friendly_name.toLowerCase();
+                        partnerMatch = partner.includes(searchInput)
+
+                        return partialNameMatch || cityMatch || partnerMatch;
+                    })
+
+                    return results;
                 },   
           },
           methods: {
@@ -721,11 +749,19 @@
                     .then(data=> {
                         this.loading = false;
                         data.forEach(x => { 
+                            // Shorten long descriptions for now
                             x.event.description = x.event.description.slice(0,60) + "...";
-                            this.results=data;
+                            // Dates - I am sure there is a vue lib for this, but for this demo..
+                            da = new Date(x.start_datetime)
+                            x.start_datetime = da.getDay() + '/' + da.getMonth() + '/' + da.getFullYear()
+                            var mins = da.getMinutes()<10?'00':'' + da.getMinutes();
+                            var hours = da.getHours()<10?'00':''  + da.getHours();
+                            x.start_clocktime = hours + ':' + mins
+                        
                     });
+                    this.results=data;
                 });
-            }
+            },
         },
           beforeMount() {
               this.fetchAPI();
