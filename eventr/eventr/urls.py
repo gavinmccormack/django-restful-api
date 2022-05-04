@@ -18,7 +18,7 @@ from django.urls import path, include
 from listings.views import listings, EventApi
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
-    path('', listings),
-    path('get_events', EventApi.as_view()),
+    path("admin/", admin.site.urls),
+    path("", listings),
+    path("get_events", EventApi.as_view()),
 ]

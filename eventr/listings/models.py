@@ -1,15 +1,22 @@
 from django.db import models
-class Source(models.Model): # NB: Probably wouldn't call this source, overlaps with too many django/python names
+
+
+class Source(
+    models.Model
+):  # NB: Probably wouldn't call this source, overlaps with too many django/python names
     spektrix_client_name = models.TextField(unique=True)
     friendly_name = models.TextField()
     default_city = models.CharField(max_length=200, null=True, blank=True)
-    api_url = models.CharField(max_length=200, null=True, blank=True) # Derives from speaktrix client name, but full form URL seems good
+    api_url = models.CharField(
+        max_length=200, null=True, blank=True
+    )  # Derives from speaktrix client name, but full form URL seems good
 
-    def __str__(self): # NB: For django admin
-       return 'Source: ' + self.friendly_name
+    def __str__(self):  # NB: For django admin
+        return "Source: " + self.friendly_name
 
-    def __unicode__(self): # NB: For rest framework serializer
+    def __unicode__(self):  # NB: For rest framework serializer
         return "Wee"
+
 
 class Event(models.Model):
     source = models.ForeignKey(Source, related_name="events", on_delete=models.CASCADE)
@@ -21,7 +28,9 @@ class Event(models.Model):
 
 class EventInstance(models.Model):
     foreign_id = models.TextField()
-    event = models.ForeignKey(Event, related_name="eventinstances", on_delete=models.CASCADE)
+    event = models.ForeignKey(
+        Event, related_name="eventinstances", on_delete=models.CASCADE
+    )
     start_datetime = models.DateTimeField()
     venue_name = models.TextField(blank=True)
     venue_address = models.TextField(blank=True)

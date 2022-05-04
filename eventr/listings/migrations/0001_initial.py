@@ -8,44 +8,81 @@ class Migration(migrations.Migration):
 
     initial = True
 
-    dependencies = [
-    ]
+    dependencies = []
 
     operations = [
         migrations.CreateModel(
-            name='Event',
+            name="Event",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('foreign_id', models.TextField()),
-                ('name', models.TextField()),
-                ('duration_minutes', models.IntegerField(blank=True, null=True)),
-                ('description', models.TextField(blank=True)),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("foreign_id", models.TextField()),
+                ("name", models.TextField()),
+                ("duration_minutes", models.IntegerField(blank=True, null=True)),
+                ("description", models.TextField(blank=True)),
             ],
         ),
         migrations.CreateModel(
-            name='Source',
+            name="Source",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('spektrix_client_name', models.TextField(unique=True)),
-                ('friendly_name', models.TextField()),
-                ('default_city', models.CharField(blank=True, max_length=200, null=True)),
-                ('api_url', models.CharField(blank=True, max_length=200, null=True)),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("spektrix_client_name", models.TextField(unique=True)),
+                ("friendly_name", models.TextField()),
+                (
+                    "default_city",
+                    models.CharField(blank=True, max_length=200, null=True),
+                ),
+                ("api_url", models.CharField(blank=True, max_length=200, null=True)),
             ],
         ),
         migrations.CreateModel(
-            name='EventInstance',
+            name="EventInstance",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('foreign_id', models.TextField()),
-                ('start_datetime', models.DateTimeField()),
-                ('venue_name', models.TextField(blank=True)),
-                ('venue_address', models.TextField(blank=True)),
-                ('event', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='instances', to='listings.event')),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True,
+                        primary_key=True,
+                        serialize=False,
+                        verbose_name="ID",
+                    ),
+                ),
+                ("foreign_id", models.TextField()),
+                ("start_datetime", models.DateTimeField()),
+                ("venue_name", models.TextField(blank=True)),
+                ("venue_address", models.TextField(blank=True)),
+                (
+                    "event",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="instances",
+                        to="listings.event",
+                    ),
+                ),
             ],
         ),
         migrations.AddField(
-            model_name='event',
-            name='source',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='events', to='listings.source'),
+            model_name="event",
+            name="source",
+            field=models.ForeignKey(
+                on_delete=django.db.models.deletion.CASCADE,
+                related_name="events",
+                to="listings.source",
+            ),
         ),
     ]
