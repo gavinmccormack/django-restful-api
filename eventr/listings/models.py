@@ -37,8 +37,6 @@ class EventInstance(models.Model):
 
 
 """
-I was in the middle of adding this, but since I'm just uploading what I've got right now, this breaks runtime
-
 from listings.serializers import EventSerializer
 class EventList(ListAPIView):
     queryset = Event.objects.all().filter()
