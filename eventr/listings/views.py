@@ -26,7 +26,7 @@ class EventApi(APIView):
             )  # For a certain definition of today
             events = EventInstance.objects.filter(
                 start_datetime__range=[today, tomorrow]
-            )  # NB: I'd probably recheck this, because it seems like somewhere I might make an off by one type mistake
+            ) 
             events = events.select_related("event", "event__source")
             serializer = EventInstanceSerializer(events, many=True)
             return JsonResponse(serializer.data, safe=False)
