@@ -4,7 +4,7 @@ from django.core.management.base import BaseCommand
 from django.core.cache import cache
 from django.utils.text import slugify
 from listings.models import Event, EventInstance, Source
-from eventr.settings import PARTNER_CACHE_KEY_FORMAT, PARTNER_CACHE_TIME
+from revent.settings import PARTNER_CACHE_KEY_FORMAT, PARTNER_CACHE_TIME
 from django import setup
 
 logger = logging.getLogger('django.retrieve_partner_events')
